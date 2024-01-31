@@ -17,25 +17,25 @@ async function main() {
     const json = JSON.parse(fileContent);
   
     // JSONをフラットなテキストに変換する関数
-    function flattenJson(json: Record<string, any>, prefix = '') {
-      let text = '';
-      for (const key in json) {
-        if (typeof json[key] === 'object' && json[key] !== null) {
-          text += flattenJson(json[key], `${prefix}${key}.`);
-        } else {
-          text += `${prefix}${key}: ${json[key]} `;
+    function flattenJsonToArray(json: Record<string, any>, prefix = ''): string[] {
+        let arr:string[] = [];
+        for (const key in json) {
+          if (typeof json[key] === 'object' && json[key] !== null) {
+            arr = arr.concat(flattenJsonToArray(json[key], `${prefix}${key}.`));
+          } else {
+            arr.push(`${prefix}${key}: ${json[key]}`);
+          }
         }
+        return arr;
       }
-      return text;
-    }
   
     // JSONをフラットなテキストに変換
-    const text = flattenJson(json);
+    const texts = flattenJsonToArray(json);
   
     // テキストをドキュメントとしてインデックス化
-    const document = new Document({ text: text });
-    const index = await VectorStoreIndex.fromDocuments([document], { serviceContext });
-  /*
+    const documents = texts.map(text => new Document({ text: text }));
+    const serviceContext = serviceContextFromDefaults({ chunkSize: 512 });
+    const index = await VectorStoreIndex.fromDocuments(documents, { serviceContext });  /*
     const essay = await fs.readFile(
         "node_modules/llamaindex/examples/abramov.txt",
         "utf-8",
