@@ -9,9 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^20.11.14",
     "dotenv": "^16.4.1",
     "llamaindex": "^0.1.6",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "ts-node": "^10.9.2"
   }
 }
